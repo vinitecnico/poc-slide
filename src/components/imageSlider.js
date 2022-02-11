@@ -1,36 +1,32 @@
-import React, { useState } from "react";
+import React from "react";
 
-const ImageSlider = ({ images }) => {
-  // takes in images as props
-  const [index, setIndex] = useState(0); // create state to keep track of images index, set the default index to 0
+const ImageSlider = ({ images, handleChangeImages }) => {
+  const selectedIndex = images.findIndex(({ active }) => active);
 
-  const slideRight = () => {
-    setIndex((index + 1) % images.length); // increases index by 1
-  };
-
-  const slideLeft = () => {
-    const nextIndex = index - 1;
-    if (nextIndex < 0) {
-      setIndex(images.length - 1); // returns last index of images array if index is less than 0
-    } else {
-      setIndex(nextIndex);
-    }
+  const handlPlusSlides = (position) => {
+    handleChangeImages(position);
   };
 
   return (
-    images.length > 0 && (
-      <main>
-        <div>
-          <button onClick={slideLeft}>{"<"}</button>
+    <div className="slideshow-container">
+      {images.map(({ id, imageUrl, alt, active }) => (
+        <div key={id} className={`fade ${active ? "active" : "mySlides"}`}>
+          <div className="numbertext">1</div>
+          <img src={imageUrl} alt={alt} />
+          <div className="text">{alt}</div>
         </div>
-        <div>
-          <img src={images[index]} alt={index} />
-        </div>
-        <div>
-          <button onClick={slideRight}>{">"}</button>
-        </div>
-      </main>
-    )
+      ))}
+      {selectedIndex > 0 && (
+        <a className="prev" onClick={() => handlPlusSlides(-1)}>
+          &#10094;
+        </a>
+      )}
+      {selectedIndex < images.length - 1 && (
+        <a className="next" onClick={() => handlPlusSlides(1)}>
+          &#10095;
+        </a>
+      )}
+    </div>
   );
 };
 
